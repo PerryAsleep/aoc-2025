@@ -19,25 +19,19 @@
 	{
 		var numDigits = 12;
 		var digits = new int[numDigits];
+		var insertIndexes = new int[10];
 
 		var numValues = line.Length;
 		for (var i = 0; i < numValues; i++)
 		{
 			var v = line[i] - '0';
-
-			// digits is sorted descending, could do a log(N) search for the index to set v.
-			// But numDigits is small and this is simple.
-
-			for (var di = 0; di < numDigits; di++)
-			{
-				if (v > digits[di] && numDigits - di <= (numValues - i))
-				{
-					digits[di] = v;
-					for (var ri = di + 1; ri < numDigits; ri++)
-						digits[ri] = 0;
-					break;
-				}
-			}
+			if (insertIndexes[v] >= numDigits)
+				continue;
+			var insertIndex = Math.Max(insertIndexes[v], numDigits - (numValues - i));
+			digits[insertIndex] = v;
+			insertIndex++;
+			for (var j = 0; j <= v; j++)
+				insertIndexes[j] = insertIndex;
 		}
 
 		var result = 0L;
